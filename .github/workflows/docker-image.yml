@@ -23,5 +23,5 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v2
         with:
-          tag: stepp95/gradle-chrome
+          tags: stepp95/gradle-chrome
           push: true
