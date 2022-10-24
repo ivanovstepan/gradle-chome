@@ -1,17 +1,25 @@
 FROM gradle:7.5.1-jdk17-alpine
 
-# Google Chrome
-
-ARG CHROME_VERSION=106.0.5249.61-1
-RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \ 
-    && echo "deb http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list
-RUN apt-get update && apt-get -y install google-chrome-stable
-
-# ChromeDriver
-ARG CHROME_DRIVER_VERSION=106.0.5249.61
-RUN wget -q -O /tmp/chromedriver.zip https://chromedriver.storage.googleapis.com/$CHROME_DRIVER_VERSION/chromedriver_linux64.zip \
-	&& unzip /tmp/chromedriver.zip -d /opt \
-	&& rm /tmp/chromedriver.zip \
-	&& mv /opt/chromedriver /opt/chromedriver-$CHROME_DRIVER_VERSION \
-	&& chmod 755 /opt/chromedriver-$CHROME_DRIVER_VERSION \
-	&& ln -s /opt/chromedriver-$CHROME_DRIVER_VERSION /usr/bin/chromedriver
+RUN \
+apt-get update && \
+apt-get install -y wget unzip && \
+wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - && \
+  echo "deb http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google.list && \
+wget -N http://chromedriver.storage.googleapis.com/2.9/chromedriver_linux64.zip && \
+unzip chromedriver_linux64.zip && \
+rm chromedriver_linux64.zip && \
+chmod +x chromedriver && \
+mv -f chromedriver /usr/bin/chromedriver && \
+apt-get update && apt-get install -y \
+ca-certificates	\
+libgl1-mesa-dri \
+xfonts-100dpi \
+xfonts-75dpi \
+xfonts-scalable \
+xfonts-cyrillic \
+xvfb --no-install-recommends && \
+apt-get purge -y wget unzip && \
+apt-get install -y \
+google-chrome-stable && \
+apt-get clean autoclean && \
+rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
