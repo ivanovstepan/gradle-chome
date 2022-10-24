@@ -3,4 +3,4 @@ FROM gradle:7.5.1-jdk17
 
 RUN apt-get install -y wget
 RUN wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-RUN sudo apt-get -f install
+RUN apt-get -f install
